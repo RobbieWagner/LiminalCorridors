@@ -1,3 +1,5 @@
+//Imported from Universal Render Pipeline. Unused
+
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 #endif

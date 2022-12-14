@@ -47,7 +47,7 @@ public class Movement : MonoBehaviour
     private RND random;
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         originalPlayerSpeed = playerSpeed;
         canMove = true;
@@ -65,7 +65,7 @@ public class Movement : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if(canMove)
         {
@@ -85,7 +85,7 @@ public class Movement : MonoBehaviour
         }
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         if(startsRunning && !running)
         {
@@ -96,7 +96,7 @@ public class Movement : MonoBehaviour
         }
     }
 
-    void OnGUI()
+    private void OnGUI()
     {
         if(Input.GetKeyDown(KeyCode.Space) && Input.GetKey(KeyCode.W) && !running && currentStamina > maxStamina/4)
         { 

@@ -28,7 +28,7 @@ public class CameraController : MonoBehaviour
     public bool canLookAround;
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         if(lockCamera) Cursor.lockState = CursorLockMode.Locked;
         else Cursor.lockState = CursorLockMode.None;
@@ -39,7 +39,7 @@ public class CameraController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if(canLookAround)
         {

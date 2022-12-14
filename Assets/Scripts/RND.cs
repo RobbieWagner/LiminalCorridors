@@ -7,7 +7,7 @@ public class RND : MonoBehaviour
     public System.Random rnd;
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         rnd = new System.Random();
     }
