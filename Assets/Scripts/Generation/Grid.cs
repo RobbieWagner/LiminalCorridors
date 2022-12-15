@@ -9,20 +9,19 @@ public class Grid : MonoBehaviour
     [SerializeField]
     private int sizeY = 100;
     [SerializeField]
-    private float noiseScale = .1f;
+    private GameObject horizontalWall;
     [SerializeField]
-    private float blankTileBias = .8f;
+    private GameObject verticalWall;
+    [SerializeField]
+    private float wallNoiseScale = .1f;
+    [SerializeField]
+    private float wallBias = .45f;
     [SerializeField]
     private int cellSize = 10;
-    [SerializeField]
-    private GameObject blankTile;
     [SerializeField]
     private GameObject ceiling;
     [SerializeField]
     private GameObject light;
-    [SerializeField]
-    private GameObject[] wallTiles;
-
     [SerializeField]
     private Material floorMaterial;
 
@@ -37,7 +36,7 @@ public class Grid : MonoBehaviour
 
                 //float xOffset = Random.Range(-10000f, 10000f);
                 //float yOffset = Random.Range(-10000f, 10000f);
-                //float noiseValue = Mathf.PerlinNoise(x * noiseScale + xOffset, y * noiseScale + yOffset);
+                //float noiseValue = Mathf.PerlinNoise(x * wallNoiseScale + xOffset, y * wallNoiseScale + yOffset);
                 
                 //cell.isTraversable = noiseValue < blankTileBias;
                 cell.isTraversable = true;
@@ -45,27 +44,9 @@ public class Grid : MonoBehaviour
             }
         }
 
-        //for(int i = 0; i < sizeX; i++) {
-            //for(int j = 0; j < sizeY; j++) {
-                //Cell cell = grid[i, j];
-                //if(cell.isTraversable) {
-                    //Quaternion rotation = blankTile.transform.rotation;
-                    //cell.tile = Instantiate(blankTile, new Vector3(i * cellSize, 0, j * cellSize), rotation);
-                //}
-                //else{
-                    //int tileToUse = Random.Range(0, wallTiles.Length);
-                    //int rotationPosition = Random.Range(0, 2);
-                    //Quaternion rotation = wallTiles[tileToUse].transform.rotation * Quaternion.Euler(0, (float) (90 * rotationPosition), 0);
-                    //cell.tile = Instantiate(wallTiles[tileToUse], new Vector3(i * cellSize, 0, j * cellSize), rotation);
-                //}
-
-                //Instantiate(ceiling, new Vector3(i * cellSize, 9, j * cellSize), Quaternion.Euler(90, 0, 0));
-                //if(light != null && Random.Range(0,5) == 0)Instantiate(light, new Vector3(i * cellSize, 8, j * cellSize), Quaternion.Euler(90, 0, 0));
-            //}
-        //}
-
         DrawGameTerrain(grid);
         AddTexture(grid);
+        DrawGameWalls(grid);
     }
 
     private void AddTexture(Cell[,] grid) {
@@ -113,5 +94,28 @@ public class Grid : MonoBehaviour
 
 
         MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
+    }
+
+    private void DrawGameWalls(Cell[,] grid) {
+        float xOffset, yOffset, noiseValue;
+
+        for(int x = 0; x < sizeX; x++) {
+            for(int y = 0; y < sizeY; y++) {
+                Cell cell = grid[x, y];
+                xOffset = Random.Range(-10000f, 10000f);
+                yOffset = Random.Range(-10000f, 10000f);
+                noiseValue = Mathf.PerlinNoise(x * wallNoiseScale + xOffset, y * wallNoiseScale + yOffset);
+
+                float addHWall = Random.Range(0, wallBias);
+                float addVWall = Random.Range(0, wallBias);
+                if(noiseValue < addHWall) Instantiate(horizontalWall, new Vector3( x * cellSize, 0, y * cellSize), Quaternion.identity);
+                if(noiseValue < addVWall) Instantiate(verticalWall, new Vector3( x * cellSize, 0, y * cellSize), Quaternion.identity);
+
+                Instantiate(ceiling, new Vector3(x * cellSize, 9, y * cellSize), Quaternion.Euler(90, 0, 0));
+                if(light != null && Random.Range(0,5) == 0)Instantiate(light, new Vector3(x * cellSize, 8, y * cellSize), Quaternion.Euler(90, 0, 0));
+            }
+        }
+
+        bool horizontalWallSpawned = false;
     }
 }

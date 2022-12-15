@@ -827,14 +827,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sizeX: 50
   sizeY: 10
-  noiseScale: 0.1
-  blankTileBias: 0.45
+  horizontalWall: {fileID: 6782318247971699130, guid: bb6dde8c564cdee499b5fa57e84d07fa, type: 3}
+  verticalWall: {fileID: 6782318247971699130, guid: 02bbbb9cb7efb244f8257d0cb8856cb6, type: 3}
+  wallNoiseScale: 0.1
+  wallBias: 0.45
   cellSize: 10
-  blankTile: {fileID: 1438764536787742509, guid: 8dc654745715cd340bda23ffd289adc1, type: 3}
   ceiling: {fileID: 8775718429143151202, guid: 43244811c2b384d47b52a31c690d7b59, type: 3}
   light: {fileID: 7048327406886937278, guid: a825d6ecc48798b49a49fcddd90e66d5, type: 3}
-  wallTiles:
-  - {fileID: 6934385306995695978, guid: 64cc87a697ff78c4eb1b4f0159f25867, type: 3}
   floorMaterial: {fileID: 2100000, guid: bc8a97f201517bf4a91d58d20dde17b8, type: 2}
 --- !u!4 &2090381498
 Transform:
@@ -844,7 +843,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2090381496}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
