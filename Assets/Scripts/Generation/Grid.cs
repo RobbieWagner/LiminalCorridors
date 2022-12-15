@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Grid : MonoBehaviour
 {
@@ -27,6 +28,10 @@ public class Grid : MonoBehaviour
 
     private Cell[,] grid;
 
+    [SerializeField]
+    NavMeshBaker navMeshBaker;
+    List<NavMeshSurface> navMeshSurfaces;
+
     private void Start() {
         grid = new Cell[sizeX, sizeY];
 
@@ -44,9 +49,13 @@ public class Grid : MonoBehaviour
             }
         }
 
+        navMeshSurfaces = new List<NavMeshSurface>();
+        navMeshSurfaces.Add(gameObject.GetComponent<NavMeshSurface>());
+
         DrawGameTerrain(grid);
         AddTexture(grid);
         DrawGameWalls(grid);
+        navMeshBaker.buildNavMeshes(navMeshSurfaces);
     }
 
     private void AddTexture(Cell[,] grid) {
@@ -92,7 +101,6 @@ public class Grid : MonoBehaviour
         MeshFilter meshFilter = gameObject.AddComponent<MeshFilter>();
         meshFilter.mesh = mesh;
 
-
         MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
     }
 
@@ -108,8 +116,12 @@ public class Grid : MonoBehaviour
 
                 float addHWall = Random.Range(0, wallBias);
                 float addVWall = Random.Range(0, wallBias);
-                if(noiseValue < addHWall) Instantiate(horizontalWall, new Vector3( x * cellSize, 0, y * cellSize), Quaternion.identity);
-                if(noiseValue < addVWall) Instantiate(verticalWall, new Vector3( x * cellSize, 0, y * cellSize), Quaternion.identity);
+                if(noiseValue < addHWall) {
+                    GameObject hWall = Instantiate(horizontalWall, new Vector3( x * cellSize, 0, y * cellSize), Quaternion.identity);
+                }
+                if(noiseValue < addVWall) {
+                    GameObject vWall = Instantiate(verticalWall, new Vector3( x * cellSize, 0, y * cellSize), Quaternion.identity);
+                }
 
                 Instantiate(ceiling, new Vector3(x * cellSize, 9, y * cellSize), Quaternion.Euler(90, 0, 0));
                 if(light != null && Random.Range(0,5) == 0)Instantiate(light, new Vector3(x * cellSize, 8, y * cellSize), Quaternion.Euler(90, 0, 0));
