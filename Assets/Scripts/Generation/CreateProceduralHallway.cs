@@ -41,7 +41,7 @@ public class CreateProceduralHallway : MonoBehaviour
     public bool spawningMonster;
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         currentBook = 0;
         rnd = random.rnd;
@@ -52,7 +52,7 @@ public class CreateProceduralHallway : MonoBehaviour
         CreateHallsGoingForward(initialTilesToCreate, 0, initialTilesToCreate.Length * 10 / 2);
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         //calls hallway generation functions if the player is reaching the edge of the already generated map
         if(character.transform.position.z > (positiveZHallEndPos - (renderDistance * 10)))
