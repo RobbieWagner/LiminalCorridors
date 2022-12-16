@@ -25,7 +25,8 @@ public class Monster : MonoBehaviour
     private int roamLimit;
     [SerializeField]
     private bool roamingDestinationSet;
-    private int roamingPlaces;
+    private int pathCount;
+    private bool roaming;
 
     enum monsterState{
         inactive,
@@ -42,6 +43,7 @@ public class Monster : MonoBehaviour
         standingIdle = false;
         firstIdle = true;
         roamingDestinationSet = false;
+        roaming = false;
     }
 
     // Update is called once per frame
@@ -49,13 +51,13 @@ public class Monster : MonoBehaviour
         Vector3 monsterDestination;
 
         if(currentState == (int) monsterState.inactive && !standingIdle){
-            if(firstIdle) {
+            if(firstIdle && !standingIdle){
                 firstIdle = false;
                 StartCoroutine(StandIdle(initialWaitTime));
             }
-            else StartCoroutine(StandIdle(monsterCooldownTime));
+            else if(!standingIdle) StartCoroutine(StandIdle(monsterCooldownTime));
         }
-        else if(currentState == (int) monsterState.roaming){
+        else if(!roamingDestinationSet && !roaming && currentState == (int) monsterState.roaming){
             StartCoroutine(Roam());
         }
         else if(currentState == (int) monsterState.chasingPlayer){
@@ -80,26 +82,24 @@ public class Monster : MonoBehaviour
         navMeshAgent.SetDestination(playerGO.transform.position);
         if(!IsPlayerVisible()){
         currentState = (int) monsterState.lookingForPlayer;
-        Debug.Log("looking for player");
+        //Debug.Log("looking for player");
         }
     }
 
     private void LookForPlayer(){
         if(IsPlayerVisible()){
             currentState = (int) monsterState.chasingPlayer;
-            Debug.Log("chasing");
+            //Debug.Log("chasing");
         }
-        else if(navMeshAgent.remainingDistance < .01f){
+        else if(Vector3.Distance(navMeshAgent.destination, transform.position) < 1.0f){
             currentState = (int) monsterState.roaming;
-            Debug.Log("roaming");
+            //Debug.Log("roaming");
         }
     }
 
     private IEnumerator Roam(){
-
-        if(!roamingDestinationSet)
+        if(!roamingDestinationSet && !roaming)
         {
-            Debug.Log("finding new path");
             float positionX = Random.Range(-maxDistanceFromPlayer, maxDistanceFromPlayer);
             float positionZ = Random.Range(-maxDistanceFromPlayer, maxDistanceFromPlayer);
             Vector3 path = new Vector3(playerGO.transform.position.x + positionX, 0, playerGO.transform.position.z + positionZ);
@@ -108,26 +108,29 @@ public class Monster : MonoBehaviour
                 positionZ = Random.Range(-maxDistanceFromPlayer, maxDistanceFromPlayer);
                 path = new Vector3(playerGO.transform.position.x + positionX, 0, playerGO.transform.position.z + positionZ);
             }
-            roamingPlaces++;
-            Debug.Log("path: " + path.ToString());
+            pathCount++;
+            roamingDestinationSet = true;
+            roaming = true;
+            //Debug.Log("Destination number " + pathCount);
         }
 
-        while(!IsPlayerVisible() && !(navMeshAgent.remainingDistance < 0.01f)){
+        while((!IsPlayerVisible()) && !(Vector3.Distance(navMeshAgent.destination, transform.position) < 1.0f)){
             yield return null;
         }
         
         if(IsPlayerVisible()){
             currentState = (int) monsterState.chasingPlayer;
-            Debug.Log("chasing");
+            //Debug.Log("chasing");
         }
 
-        if(roamingPlaces == roamLimit){
-            roamingPlaces = 0;
+        if(pathCount == roamLimit){
+            pathCount = 0;
             currentState = (int) monsterState.inactive;
-            Debug.Log("inactive");
+            //Debug.Log("inactive");
         }
 
         roamingDestinationSet = false;
+        roaming = false;
         StopCoroutine(Roam());
     }
 
@@ -137,14 +140,14 @@ public class Monster : MonoBehaviour
         if(IsPlayerVisible()){
             yield return null;
             currentState = (int) monsterState.chasingPlayer;
-            Debug.Log("chasing");
+            ////Debug.Log("chasing");
             standingIdle = false;
             StopCoroutine(StandIdle(timeToStand));
         }
 
         yield return new WaitForSeconds(timeToStand);
         currentState = (int) monsterState.roaming;
-        Debug.Log("roaming");
+        //Debug.Log("roaming");
         standingIdle = false;
         StopCoroutine(StandIdle(timeToStand));
     }
