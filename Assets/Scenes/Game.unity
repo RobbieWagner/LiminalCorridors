@@ -231,7 +231,7 @@ GameObject:
   - component: {fileID: 471251732}
   - component: {fileID: 471251733}
   m_Layer: 0
-  m_Name: Sphere
+  m_Name: Monster
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -352,7 +352,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   navMeshAgent: {fileID: 471251732}
-  maxDistanceFromPlayer: 50
+  maxDistanceFromPlayer: 100
+  initialWaitTime: 60
+  monsterCooldownTime: 30
+  roamLimit: 3
 --- !u!1 &602715933
 GameObject:
   m_ObjectHideFlags: 0
@@ -1007,7 +1010,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sizeX: 50
-  sizeY: 10
+  sizeY: 50
   horizontalWall: {fileID: 6782318247971699130, guid: bb6dde8c564cdee499b5fa57e84d07fa, type: 3}
   verticalWall: {fileID: 6782318247971699130, guid: 02bbbb9cb7efb244f8257d0cb8856cb6, type: 3}
   wallNoiseScale: 0.1
