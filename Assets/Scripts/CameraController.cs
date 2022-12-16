@@ -5,25 +5,19 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     //This camera controller is for the use of a first person 3d game
-    [SerializeField]
-    private float mouseSensitivity = 100f;
+    [SerializeField] private float mouseSensitivity = 100f;
     public Transform playerBody;
 
-    [SerializeField]
-    private Camera camera;
+    [SerializeField] private Camera camera;
 
     float xRotation = 0f;
 
-    [SerializeField]
-    private bool lockCamera = true;
+    [SerializeField] private bool lockCamera = true;
 
-    [SerializeField]
-    private Player player;
+    [SerializeField] private Player player;
 
-    [SerializeField]
-    private LayerMask interactables;
-    [SerializeField]
-    private GameObject cameraDot;
+    [SerializeField] private LayerMask interactables;
+    [SerializeField] private GameObject cameraDot;
 
     public bool canLookAround;
 

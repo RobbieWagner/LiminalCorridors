@@ -8,20 +8,21 @@ using UnityEngine.UI;
 public class Movement : MonoBehaviour
 {
 
-    public bool canMove;
+    [SerializeField] private bool canMove;
 
-    public CharacterController characterBody;
-    public Transform characterPos;
+    [SerializeField] private CharacterController characterBody;
+    [SerializeField] private Transform characterPos;
 
-    public float playerSpeed = 12f;
+    public float playerSpeed = 5f;
+    [SerializeField] private float runSpeed;
     private float originalPlayerSpeed;
 
     bool startsRunning;
     bool running;
-    public int maxStamina;
-    private int currentStamina;
-    public float staminaLossRate;
-    public float staminaGainRate;
+    [SerializeField] private int maxStamina;
+    [SerializeField] private int currentStamina;
+    [SerializeField] private int staminaLossRate;
+    [SerializeField] private int staminaGainRate;
 
     bool isMoving;
 
@@ -30,21 +31,12 @@ public class Movement : MonoBehaviour
     bool playingScaredHeartbeatSounds;
     bool playingOutOfStaminaHeartbeatSounds;
 
-    [SerializeField]
-    private AudioSource movementSounds;
-    [SerializeField]
-    private AudioSource lowStaminaHeartbeat;
-    [SerializeField]
-    private AudioSource scaredHeartbeat;
-    [SerializeField]
-    private AudioSource outOfStaminaHeartbeat;
+    [SerializeField] private AudioSource movementSounds;
+    [SerializeField] private AudioSource lowStaminaHeartbeat;
+    [SerializeField] private AudioSource scaredHeartbeat;
+    [SerializeField] private AudioSource outOfStaminaHeartbeat;
     
-    [SerializeField]
-    private Volume staminaExhaustionFilter;
-
-    System.Random rnd;
-    [SerializeField]
-    private RND random;
+    [SerializeField] private Volume staminaExhaustionFilter;
 
     // Start is called before the first frame update
     private void Start()
@@ -56,8 +48,6 @@ public class Movement : MonoBehaviour
         running = false;
         isMoving = false;
         playingWalkingSound = false;
-
-        rnd = random.rnd;
 
         playingLowStaminaHeartbeatSounds = false;
         playingScaredHeartbeatSounds = false;
@@ -89,7 +79,6 @@ public class Movement : MonoBehaviour
     {
         if(startsRunning && !running)
         {
-            playerSpeed = originalPlayerSpeed * 2.5f;
             running = true;
             startsRunning = false;
             StartCoroutine(CharacterRun());
@@ -121,7 +110,7 @@ public class Movement : MonoBehaviour
 
     public IEnumerator CharacterRun()
     {
-        playerSpeed = originalPlayerSpeed * 1.5f;
+        playerSpeed = runSpeed;
         StartCoroutine(ReduceStamina());
         while(Input.GetKey(KeyCode.Space) && Input.GetKey(KeyCode.W) && currentStamina > 0)
         {
@@ -138,8 +127,8 @@ public class Movement : MonoBehaviour
     {
         while(Input.GetKey(KeyCode.Space) && currentStamina > 0)
         {
-            currentStamina--;
-            yield return new WaitForSeconds(staminaLossRate);
+            currentStamina -= staminaLossRate;
+            yield return new WaitForSeconds(1f);
         }
         StopCoroutine(ReduceStamina());
     }
@@ -147,10 +136,10 @@ public class Movement : MonoBehaviour
     public IEnumerator ReplenishStamina()
     {
         playerSpeed = originalPlayerSpeed;
-        while(Input.GetKey(KeyCode.Space)) yield return new WaitForSeconds(staminaGainRate);
+        while(Input.GetKey(KeyCode.Space)) yield return null;
         while(!startsRunning && !running && currentStamina < maxStamina)
         {
-            currentStamina++;
+            currentStamina += staminaGainRate;
             yield return new WaitForSeconds(1f);
         }
         StopCoroutine(ReplenishStamina());

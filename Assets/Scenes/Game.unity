@@ -151,7 +151,7 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 0.1
   m_Range: 10
   m_SpotAngle: 30
@@ -216,6 +216,60 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &343132252
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 343132253}
+  - component: {fileID: 343132254}
+  m_Layer: 0
+  m_Name: CameraHolder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &343132253
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 343132252}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 773483332}
+  m_Father: {fileID: 1395534674}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &343132254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 343132252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b05d4a0c5586fca40930751bfd36a5a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mouseSensitivity: 1000
+  playerBody: {fileID: 1395534674}
+  camera: {fileID: 773483331}
+  lockCamera: 1
+  player: {fileID: 1395534675}
+  interactables:
+    serializedVersion: 2
+    m_Bits: 8
+  cameraDot: {fileID: 776982764}
+  canLookAround: 1
 --- !u!1 &471251727
 GameObject:
   m_ObjectHideFlags: 0
@@ -323,7 +377,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 7
+  m_Speed: 10
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -431,7 +485,6 @@ GameObject:
   - component: {fileID: 773483331}
   - component: {fileID: 773483330}
   - component: {fileID: 773483333}
-  - component: {fileID: 773483334}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -497,11 +550,11 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 773483329}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.8, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.8000002, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1395534674}
+  m_Father: {fileID: 343132253}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &773483333
@@ -537,28 +590,6 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
---- !u!114 &773483334
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 773483329}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b05d4a0c5586fca40930751bfd36a5a0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mouseSensitivity: 1000
-  playerBody: {fileID: 1395534674}
-  camera: {fileID: 773483331}
-  lockCamera: 1
-  player: {fileID: 1395534675}
-  interactables:
-    serializedVersion: 2
-    m_Bits: 8
-  cameraDot: {fileID: 776982764}
-  canLookAround: 1
 --- !u!1 &776982764
 GameObject:
   m_ObjectHideFlags: 0
@@ -649,6 +680,7 @@ GameObject:
   - component: {fileID: 1395534670}
   - component: {fileID: 1395534675}
   - component: {fileID: 1395534677}
+  - component: {fileID: 1395534676}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -695,8 +727,8 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1395534669}
-  m_Enabled: 1
-  m_CastShadows: 1
+  m_Enabled: 0
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_MotionVectors: 1
@@ -745,10 +777,10 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1395534669}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 250, y: 4, z: 50}
+  m_LocalPosition: {x: 250, y: 4, z: 250}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 773483332}
+  - {fileID: 343132253}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -764,6 +796,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 741a97eda4616bc468720e4e8d5ecd1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1395534676
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1395534669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63d7c213f00c30044b508bf8f20f9613, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enabled: 1
+  amplitude: 0.0015
+  frequency: 15
+  camera: {fileID: 773483332}
+  cameraHolder: {fileID: 343132253}
 --- !u!114 &1395534677
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -780,15 +829,16 @@ MonoBehaviour:
   characterBody: {fileID: 1395534670}
   characterPos: {fileID: 1395534674}
   playerSpeed: 5
-  maxStamina: 0
-  staminaLossRate: 0
-  staminaGainRate: 0
+  runSpeed: 13
+  maxStamina: 100
+  currentStamina: 0
+  staminaLossRate: 4
+  staminaGainRate: 6
   movementSounds: {fileID: 0}
   lowStaminaHeartbeat: {fileID: 0}
   scaredHeartbeat: {fileID: 0}
   outOfStaminaHeartbeat: {fileID: 0}
   staminaExhaustionFilter: {fileID: 0}
-  random: {fileID: 1935827739}
 --- !u!1 &1589326214
 GameObject:
   m_ObjectHideFlags: 0
@@ -1011,7 +1061,7 @@ MonoBehaviour:
   horizontalWall: {fileID: 6782318247971699130, guid: bb6dde8c564cdee499b5fa57e84d07fa, type: 3}
   verticalWall: {fileID: 6782318247971699130, guid: 02bbbb9cb7efb244f8257d0cb8856cb6, type: 3}
   wallNoiseScale: 0.1
-  wallBias: 0.45
+  wallBias: 0.55
   cellSize: 10
   ceiling: {fileID: 8775718429143151202, guid: 43244811c2b384d47b52a31c690d7b59, type: 3}
   light: {fileID: 7048327406886937278, guid: a825d6ecc48798b49a49fcddd90e66d5, type: 3}

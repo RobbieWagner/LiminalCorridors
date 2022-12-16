@@ -5,31 +5,20 @@ using UnityEngine.AI;
 
 public class Grid : MonoBehaviour
 {
-    [SerializeField]
-    private int sizeX = 100;
-    [SerializeField]
-    private int sizeY = 100;
-    [SerializeField]
-    private GameObject horizontalWall;
-    [SerializeField]
-    private GameObject verticalWall;
-    [SerializeField]
-    private float wallNoiseScale = .1f;
-    [SerializeField]
-    private float wallBias = .45f;
-    [SerializeField]
-    private int cellSize = 10;
-    [SerializeField]
-    private GameObject ceiling;
-    [SerializeField]
-    private GameObject light;
-    [SerializeField]
-    private Material floorMaterial;
+    [SerializeField] private int sizeX = 100;
+    [SerializeField] private int sizeY = 100;
+    [SerializeField] private GameObject horizontalWall;
+    [SerializeField] private GameObject verticalWall;
+    [SerializeField] private float wallNoiseScale = .1f;
+    [SerializeField] private float wallBias = .45f;
+    [SerializeField] private int cellSize = 10;
+    [SerializeField] private GameObject ceiling;
+    [SerializeField] private GameObject light;
+    [SerializeField] private Material floorMaterial;
 
     private Cell[,] grid;
 
-    [SerializeField]
-    NavMeshBaker navMeshBaker;
+    [SerializeField] NavMeshBaker navMeshBaker;
     List<NavMeshSurface> navMeshSurfaces;
 
     private void Start() {

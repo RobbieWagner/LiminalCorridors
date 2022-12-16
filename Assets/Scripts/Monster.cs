@@ -5,22 +5,16 @@ using UnityEngine.AI;
 
 public class Monster : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject playerGO;
-    [SerializeField]
-    private NavMeshAgent navMeshAgent;
+    [SerializeField] private GameObject playerGO;
+    [SerializeField] private NavMeshAgent navMeshAgent;
 
-    [SerializeField]
-    private float maxDistanceFromPlayer = 100f;
+    [SerializeField] private float maxDistanceFromPlayer = 100f;
 
     private bool firstIdle;
-    [SerializeField]
-    private float initialWaitTime = 60f;
-    [SerializeField]
-    private float monsterCooldownTime = 10f;
+    [SerializeField] private float initialWaitTime = 60f;
+    [SerializeField] private float monsterCooldownTime = 10f;
     private bool standingIdle;
-    [SerializeField]
-    private int roamLimit;
+    [SerializeField] private int roamLimit;
     private bool roamingDestinationSet;
     private int pathCount;
     private bool roaming;
