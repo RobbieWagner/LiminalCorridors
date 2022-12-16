@@ -351,6 +351,8 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 64
+  navMeshAgent: {fileID: 471251732}
+  maxDistanceFromPlayer: 50
 --- !u!1 &602715933
 GameObject:
   m_ObjectHideFlags: 0
