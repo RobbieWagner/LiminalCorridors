@@ -8,8 +8,6 @@ public class Monster : MonoBehaviour
     [SerializeField]
     private GameObject playerGO;
     [SerializeField]
-    private LayerMask playerLayer;
-    [SerializeField]
     private NavMeshAgent navMeshAgent;
 
     [SerializeField]
@@ -23,10 +21,10 @@ public class Monster : MonoBehaviour
     private bool standingIdle;
     [SerializeField]
     private int roamLimit;
-    [SerializeField]
     private bool roamingDestinationSet;
     private int pathCount;
     private bool roaming;
+    private bool pausingIEnumerator;
 
     enum monsterState{
         inactive,
@@ -44,6 +42,7 @@ public class Monster : MonoBehaviour
         firstIdle = true;
         roamingDestinationSet = false;
         roaming = false;
+        pausingIEnumerator = false;
     }
 
     // Update is called once per frame
@@ -135,20 +134,30 @@ public class Monster : MonoBehaviour
     }
 
     private IEnumerator StandIdle(float timeToStand){
+        pausingIEnumerator = true;
         standingIdle = true;
+        StartCoroutine(Pause(timeToStand));
         navMeshAgent.SetDestination(transform.position);
-        if(IsPlayerVisible()){
+        while(!IsPlayerVisible() && pausingIEnumerator){
             yield return null;
+        }
+        if(IsPlayerVisible()) {
             currentState = (int) monsterState.chasingPlayer;
-            ////Debug.Log("chasing");
+            //Debug.Log("chasing");
             standingIdle = false;
             StopCoroutine(StandIdle(timeToStand));
         }
 
-        yield return new WaitForSeconds(timeToStand);
         currentState = (int) monsterState.roaming;
         //Debug.Log("roaming");
         standingIdle = false;
         StopCoroutine(StandIdle(timeToStand));
+    }
+
+    private IEnumerator Pause(float timeToWait) {
+        pausingIEnumerator = true;
+        yield return new WaitForSeconds(timeToWait);
+        pausingIEnumerator = false;
+        StopCoroutine(Pause(timeToWait));
     }
 }
