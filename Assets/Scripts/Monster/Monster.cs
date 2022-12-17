@@ -20,14 +20,14 @@ public class Monster : MonoBehaviour
     private bool roaming;
     private bool pausingIEnumerator;
 
-    enum monsterState{
+    public enum monsterState{
         inactive,
         roaming,
         chasingPlayer,
         lookingForPlayer
     }
 
-    int currentState;
+    public int currentState;
 
     // Start is called before the first frame update
     private void Start(){
