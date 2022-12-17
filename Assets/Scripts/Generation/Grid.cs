@@ -10,7 +10,8 @@ public class Grid : MonoBehaviour
     [SerializeField] private GameObject horizontalWall;
     [SerializeField] private GameObject verticalWall;
     [SerializeField] private float wallNoiseScale = .1f;
-    [SerializeField] private float wallBias = .45f;
+    [SerializeField, Range(0f, 1f)] private float wallBias = .45f;
+    [SerializeField, Range(0f, 1f)] private float outerWallBias = .99f;
     [SerializeField] private int cellSize = 10;
     [SerializeField] private GameObject ceiling;
     [SerializeField] private GameObject light;
@@ -28,11 +29,11 @@ public class Grid : MonoBehaviour
             for(int y = 0; y < sizeY; y++) {
                 Cell cell = new Cell();
 
-                //float xOffset = Random.Range(-10000f, 10000f);
-                //float yOffset = Random.Range(-10000f, 10000f);
-                //float noiseValue = Mathf.PerlinNoise(x * wallNoiseScale + xOffset, y * wallNoiseScale + yOffset);
+                //float xOffset1 = Random.Range(-10000f, 10000f);
+                //float yOffset1 = Random.Range(-10000f, 10000f);
+                //float noiseValue1 = Mathf.PerlinNoise(x * wallNoiseScale + xOffset1, y * wallNoiseScale + yOffset1);
                 
-                //cell.isTraversable = noiseValue < blankTileBias;
+                //cell.isTraversable = noiseValue1 < blankTileBias;
                 cell.isTraversable = true;
                 grid[x, y] = cell;
             }
@@ -94,21 +95,42 @@ public class Grid : MonoBehaviour
     }
 
     private void DrawGameWalls(Cell[,] grid) {
-        float xOffset, yOffset, noiseValue;
+        float xOffset1, yOffset1, xOffset2, yOffset2, noiseValue1, noiseValue2;
 
         for(int x = 0; x < sizeX; x++) {
             for(int y = 0; y < sizeY; y++) {
                 Cell cell = grid[x, y];
-                xOffset = Random.Range(-10000f, 10000f);
-                yOffset = Random.Range(-10000f, 10000f);
-                noiseValue = Mathf.PerlinNoise(x * wallNoiseScale + xOffset, y * wallNoiseScale + yOffset);
+                xOffset1 = Random.Range(-10000f, 10000f);
+                yOffset1 = Random.Range(-10000f, 10000f);
+                xOffset2 = Random.Range(-10000f, 10000f);
+                yOffset2 = Random.Range(-10000f, 10000f);
+                noiseValue1 = Mathf.PerlinNoise(x * wallNoiseScale + xOffset1, y * wallNoiseScale + yOffset1);
+                noiseValue2 = Mathf.PerlinNoise(x * wallNoiseScale + xOffset2, y * wallNoiseScale + yOffset2);
+                
+                //Handles edge walls
+                float addHWall = 0;
+                float addVWall = 0;
 
-                float addHWall = Random.Range(0, wallBias);
-                float addVWall = Random.Range(0, wallBias);
-                if(noiseValue < addHWall) {
+                if(((x == sizeX - 3 || x == 2) ^ (y == sizeY - 3 || y == 2))) {
+                    if((x == sizeX - 3) || (x == 2)){
+                        addHWall = outerWallBias;
+                        addVWall = 0;
+                    }
+                    else if(y == sizeY - 3 || y == 2){
+                        addHWall = 0;
+                        addVWall = outerWallBias;
+                    }
+                }
+                //Handles non-edge walls
+                else {
+                    addHWall = wallBias;
+                    addVWall = wallBias;
+                }
+
+                if(noiseValue1 < addHWall) {
                     GameObject hWall = Instantiate(horizontalWall, new Vector3( x * cellSize, 0, y * cellSize), Quaternion.identity);
                 }
-                if(noiseValue < addVWall) {
+                if(noiseValue2 < addVWall) {
                     GameObject vWall = Instantiate(verticalWall, new Vector3( x * cellSize, 0, y * cellSize), Quaternion.identity);
                 }
 

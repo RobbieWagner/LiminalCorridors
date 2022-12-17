@@ -1061,7 +1061,8 @@ MonoBehaviour:
   horizontalWall: {fileID: 6782318247971699130, guid: bb6dde8c564cdee499b5fa57e84d07fa, type: 3}
   verticalWall: {fileID: 6782318247971699130, guid: 02bbbb9cb7efb244f8257d0cb8856cb6, type: 3}
   wallNoiseScale: 0.1
-  wallBias: 0.55
+  wallBias: 0.3
+  outerWallBias: 0.9
   cellSize: 10
   ceiling: {fileID: 8775718429143151202, guid: 43244811c2b384d47b52a31c690d7b59, type: 3}
   light: {fileID: 7048327406886937278, guid: a825d6ecc48798b49a49fcddd90e66d5, type: 3}
