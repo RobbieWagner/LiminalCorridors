@@ -186,10 +186,38 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -6324970257197964802, guid: bd63137011b5cdf4295b498579fe0f42, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: b9531c5e6f486a54e8dfa08224f81f7f, type: 2}
+    - target: {fileID: -5564326434428463351, guid: bd63137011b5cdf4295b498579fe0f42, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: b9531c5e6f486a54e8dfa08224f81f7f, type: 2}
+    - target: {fileID: -4747917413154575537, guid: bd63137011b5cdf4295b498579fe0f42, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: b9531c5e6f486a54e8dfa08224f81f7f, type: 2}
+    - target: {fileID: 278067603833239686, guid: bd63137011b5cdf4295b498579fe0f42, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: b9531c5e6f486a54e8dfa08224f81f7f, type: 2}
     - target: {fileID: 919132149155446097, guid: bd63137011b5cdf4295b498579fe0f42, type: 3}
       propertyPath: m_Name
       value: MonsterDraft
       objectReference: {fileID: 0}
+    - target: {fileID: 2985478084322739907, guid: bd63137011b5cdf4295b498579fe0f42, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: b9531c5e6f486a54e8dfa08224f81f7f, type: 2}
+    - target: {fileID: 5064880245253675553, guid: bd63137011b5cdf4295b498579fe0f42, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: b9531c5e6f486a54e8dfa08224f81f7f, type: 2}
+    - target: {fileID: 8693976226221749859, guid: bd63137011b5cdf4295b498579fe0f42, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: b9531c5e6f486a54e8dfa08224f81f7f, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bd63137011b5cdf4295b498579fe0f42, type: 3}
 --- !u!4 &113861752 stripped
@@ -505,6 +533,8 @@ MonoBehaviour:
   initialWaitTime: 60
   monsterCooldownTime: 30
   roamLimit: 3
+  noticePlayerTime: 0
+  head: {fileID: 0}
   currentState: 0
 --- !u!1 &602715933
 GameObject:
@@ -972,9 +1002,11 @@ MonoBehaviour:
   playerGO: {fileID: 1395534669}
   navMeshAgent: {fileID: 1530225741}
   maxDistanceFromPlayer: 100
-  initialWaitTime: 6
+  initialWaitTime: 10
   monsterCooldownTime: 30
   roamLimit: 3
+  noticePlayerTime: 2
+  head: {fileID: 2070425601}
   currentState: 0
 --- !u!195 &1530225741
 NavMeshAgent:
@@ -1214,6 +1246,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &2070425601 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -5234448375175369897, guid: bd63137011b5cdf4295b498579fe0f42, type: 3}
+  m_PrefabInstance: {fileID: 113861751}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2090381496
 GameObject:
   m_ObjectHideFlags: 0

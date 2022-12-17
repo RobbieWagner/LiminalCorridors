@@ -18,7 +18,14 @@ public class Monster : MonoBehaviour
     private bool roamingDestinationSet;
     private int pathCount;
     private bool roaming;
+    private bool chasing;
     private bool pausingIEnumerator;
+    [SerializeField, Range(.5f, 5f)] private float noticePlayerTime;
+
+    private Coroutine pauseStandIdle;
+    private bool noticingPlayer;
+
+    [SerializeField] Transform head;
 
     public enum monsterState{
         inactive,
@@ -37,6 +44,8 @@ public class Monster : MonoBehaviour
         roamingDestinationSet = false;
         roaming = false;
         pausingIEnumerator = false;
+        noticingPlayer = false;
+        chasing = false;
     }
 
     // Update is called once per frame
@@ -72,19 +81,27 @@ public class Monster : MonoBehaviour
     } 
 
     private void ChasePlayer(){
-        navMeshAgent.SetDestination(playerGO.transform.position);
-        if(!IsPlayerVisible()){
-        currentState = (int) monsterState.lookingForPlayer;
-        //Debug.Log("looking for player");
+
+        if(!chasing && !standingIdle) StartCoroutine(StandIdle(noticePlayerTime));
+
+        if(chasing){
+            head.rotation = Quaternion.identity;
+            navMeshAgent.SetDestination(playerGO.transform.position);
+            if(!IsPlayerVisible()){
+            currentState = (int) monsterState.lookingForPlayer;
+            //Debug.Log("looking for player");
+            }
         }
     }
 
     private void LookForPlayer(){
         if(IsPlayerVisible()){
+            noticingPlayer = true;
             currentState = (int) monsterState.chasingPlayer;
             //Debug.Log("chasing");
         }
         else if(Vector3.Distance(navMeshAgent.destination, transform.position) < 1.0f){
+            chasing = false;
             currentState = (int) monsterState.roaming;
             //Debug.Log("roaming");
         }
@@ -110,16 +127,17 @@ public class Monster : MonoBehaviour
         while((!IsPlayerVisible()) && !(Vector3.Distance(navMeshAgent.destination, transform.position) < 1.0f)){
             yield return null;
         }
-        
-        if(IsPlayerVisible()){
-            currentState = (int) monsterState.chasingPlayer;
-            //Debug.Log("chasing");
-        }
 
         if(pathCount == roamLimit){
             pathCount = 0;
             currentState = (int) monsterState.inactive;
             //Debug.Log("inactive");
+        }
+        
+        if(IsPlayerVisible()){
+            noticingPlayer = true;
+            currentState = (int) monsterState.chasingPlayer;
+            //Debug.Log("chasing :");
         }
 
         roamingDestinationSet = false;
@@ -127,30 +145,44 @@ public class Monster : MonoBehaviour
         StopCoroutine(Roam());
     }
 
+    //Has Monster stand idly. Used in inactive state and when noticing the player
     private IEnumerator StandIdle(float timeToStand){
-        pausingIEnumerator = true;
+        //Debug.Log("Idle");
         standingIdle = true;
-        StartCoroutine(Pause(timeToStand));
+        pausingIEnumerator = false;
+
+        pauseStandIdle = StartCoroutine(Pause(timeToStand));
         navMeshAgent.SetDestination(transform.position);
-        while(!IsPlayerVisible() && pausingIEnumerator){
+
+        while((!IsPlayerVisible() || currentState == (int) monsterState.chasingPlayer) && pausingIEnumerator){
             yield return null;
+            head.LookAt(playerGO.transform.position);
         }
-        if(IsPlayerVisible()) {
+
+        if(currentState == (int) monsterState.chasingPlayer) chasing = true;
+
+        if(IsPlayerVisible() && currentState != (int) monsterState.chasingPlayer) {
+            noticingPlayer = true;
             currentState = (int) monsterState.chasingPlayer;
             //Debug.Log("chasing");
             standingIdle = false;
             StopCoroutine(StandIdle(timeToStand));
         }
 
-        currentState = (int) monsterState.roaming;
-        //Debug.Log("roaming");
+        if(currentState != (int) monsterState.chasingPlayer){
+            currentState = (int) monsterState.roaming;
+            //Debug.Log("roaming");
+        }
+
         standingIdle = false;
         StopCoroutine(StandIdle(timeToStand));
     }
 
     private IEnumerator Pause(float timeToWait) {
         pausingIEnumerator = true;
+        //Debug.Log("Pausing");
         yield return new WaitForSeconds(timeToWait);
+        //Debug.Log("Done Pausing");
         pausingIEnumerator = false;
         StopCoroutine(Pause(timeToWait));
     }
