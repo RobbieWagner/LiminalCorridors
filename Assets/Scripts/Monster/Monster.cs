@@ -113,7 +113,7 @@ public class Monster : MonoBehaviour
     }
 
     private void LookForPlayer(){
-        if(IsPlayerVisible() && canSeePlayer){
+        if(IsPlayerVisible()){
             noticingPlayer = true;
             currentState = (int) monsterState.chasingPlayer;
             //Debug.Log("chasing");
@@ -178,7 +178,7 @@ public class Monster : MonoBehaviour
 
         while(((!IsPlayerVisible() || !canSeePlayer) || currentState == (int) monsterState.chasingPlayer) && pausingIEnumerator){
             yield return null;
-            if(currentState == (int) monsterState.chasingPlayer) cameraHolder.LookAt(head.position);
+            if(currentState == (int) monsterState.chasingPlayer && !chasing) cameraHolder.LookAt(head.position);
             head.LookAt(playerGO.transform.position);
         }
 
