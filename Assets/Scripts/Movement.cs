@@ -27,14 +27,14 @@ public class Movement : MonoBehaviour
     bool isMoving;
 
     bool playingWalkingSound;
-    bool playingLowStaminaHeartbeatSounds;
-    bool playingScaredHeartbeatSounds;
-    bool playingOutOfStaminaHeartbeatSounds;
+    bool playingLowStaminaNoise;
+    bool playingScaredSound;
+    bool playingOutOfStaminaNoise;
 
     [SerializeField] private AudioSource movementSounds;
-    [SerializeField] private AudioSource lowStaminaHeartbeat;
-    [SerializeField] private AudioSource scaredHeartbeat;
-    [SerializeField] private AudioSource outOfStaminaHeartbeat;
+    [SerializeField] private AudioSource lowStaminaSound;
+    [SerializeField] private AudioSource scaredSound;
+    [SerializeField] private AudioSource outOfStaminaSound;
     
     [SerializeField] private Volume staminaExhaustionFilter;
 
@@ -49,9 +49,9 @@ public class Movement : MonoBehaviour
         isMoving = false;
         playingWalkingSound = false;
 
-        playingLowStaminaHeartbeatSounds = false;
-        playingScaredHeartbeatSounds = false;
-        playingOutOfStaminaHeartbeatSounds = false;
+        playingLowStaminaNoise = false;
+        playingScaredSound = false;
+        playingOutOfStaminaNoise = false;
     }
 
     // Update is called once per frame
@@ -69,9 +69,9 @@ public class Movement : MonoBehaviour
             characterBody.Move(move * playerSpeed * Time.deltaTime);
         }
 
-        if(running && !playingLowStaminaHeartbeatSounds && currentStamina < maxStamina/2)
+        if(running && !playingLowStaminaNoise && currentStamina < maxStamina/2)
         {
-            //StartCoroutine(PlayHeartbeatSounds());
+            StartCoroutine(PlayRunNoises());
         }
     }
 
@@ -158,46 +158,47 @@ public class Movement : MonoBehaviour
         StopCoroutine(PlayMovementSounds());
     }
 
-    public IEnumerator PlayHeartbeatSounds()
+    public IEnumerator PlayRunNoises()
     {
         //Look for a better way to code this
-        lowStaminaHeartbeat.Stop();
-        playingLowStaminaHeartbeatSounds = true;
-        //lowStaminaHeartbeat.Play();
+        outOfStaminaSound.Stop();
+        lowStaminaSound.Stop();
+        playingLowStaminaNoise = true;
+        lowStaminaSound.Play();
         while(running) yield return null;
         if(currentStamina < 2) 
         {
-            lowStaminaHeartbeat.Stop();
-            outOfStaminaHeartbeat.Play();
-            if (staminaExhaustionFilter.profile.TryGet<Vignette>(out var vignette))
-                {
-                    vignette.intensity.overrideState = true;
-                    while(vignette.intensity.value < .3f) 
-                    {
-                        vignette.intensity.value += .1f;
-                        yield return new WaitForSeconds(.1f);
-                    }
-                }
-            playingOutOfStaminaHeartbeatSounds = true;
-            playingLowStaminaHeartbeatSounds = false;
+            lowStaminaSound.Stop();
+            outOfStaminaSound.Play();
+            // if (staminaExhaustionFilter.profile.TryGet<Vignette>(out var vignette))
+            //     {
+            //         vignette.intensity.overrideState = true;
+            //         while(vignette.intensity.value < .3f) 
+            //         {
+            //             vignette.intensity.value += .1f;
+            //             yield return new WaitForSeconds(.1f);
+            //         }
+            //     }
+            playingOutOfStaminaNoise = true;
+            playingLowStaminaNoise = false;
         }
         while(!startsRunning && currentStamina < maxStamina/4)
         {
             yield return null;
         }
-        playingLowStaminaHeartbeatSounds = false;
-        playingOutOfStaminaHeartbeatSounds = false;
-        //lowStaminaHeartbeat.Stop();
-        //outOfStaminaHeartbeat.Stop();
-        if (staminaExhaustionFilter.profile.TryGet<Vignette>(out var vignette2))
-        {
-            vignette2.intensity.overrideState = true;
-                while(vignette2.intensity.value > 0) 
-                {
-                    vignette2.intensity.value -= .1f;
-                    yield return new WaitForSeconds(.1f);
-                }
-        }
-        StopCoroutine(PlayHeartbeatSounds());
+        playingLowStaminaNoise = false;
+        playingOutOfStaminaNoise = false;
+        //lowStaminaSound.Stop();
+        //outOfStaminaSound.Stop();
+        // if (staminaExhaustionFilter.profile.TryGet<Vignette>(out var vignette2))
+        // {
+        //     vignette2.intensity.overrideState = true;
+        //         while(vignette2.intensity.value > 0) 
+        //         {
+        //             vignette2.intensity.value -= .1f;
+        //             yield return new WaitForSeconds(.1f);
+        //         }
+        // }
+        StopCoroutine(PlayRunNoises());
     }
 }
