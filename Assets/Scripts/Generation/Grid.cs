@@ -111,15 +111,19 @@ public class Grid : MonoBehaviour
                 float addHWall = 0;
                 float addVWall = 0;
 
-                if(((x >= sizeX - 3 || x <= 2) ^ (y >= sizeY - 3 || y <= 2))) {
-                    if((x >= sizeX - 3) || (x <= 2)){
+                if((x == sizeX - 3 || x == 2) ^ (y == sizeY - 3 || y == 2)) {
+                    if((x == sizeX - 3) || (x == 2)){
                         addHWall = outerWallBias;
-                        addVWall = 0;
+                        addVWall = wallBias;
                     }
-                    else if(y >= sizeY - 3 || y <= 2){
-                        addHWall = 0;
+                    else if(y == sizeY - 3 || y == 2){
+                        addHWall = wallBias;
                         addVWall = outerWallBias;
                     }
+                }
+                else if((x == sizeX - 3 || x == 2) && (y == sizeY - 3 || y == 2)) {
+                    addHWall = 0;
+                    addVWall = 0;
                 }
                 //Handles non-edge walls
                 else {

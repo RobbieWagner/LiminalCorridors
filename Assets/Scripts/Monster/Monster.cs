@@ -26,6 +26,7 @@ public class Monster : MonoBehaviour
     private bool noticingPlayer;
 
     [SerializeField] Transform head;
+    Quaternion initialHeadRotation;
 
     public enum monsterState{
         inactive,
@@ -46,6 +47,8 @@ public class Monster : MonoBehaviour
         pausingIEnumerator = false;
         noticingPlayer = false;
         chasing = false;
+
+        initialHeadRotation = head.rotation;
     }
 
     // Update is called once per frame
@@ -85,7 +88,7 @@ public class Monster : MonoBehaviour
         if(!chasing && !standingIdle) StartCoroutine(StandIdle(noticePlayerTime));
 
         if(chasing){
-            head.rotation = Quaternion.identity;
+            head.LookAt(playerGO.transform.position);
             navMeshAgent.SetDestination(playerGO.transform.position);
             if(!IsPlayerVisible()){
             currentState = (int) monsterState.lookingForPlayer;
