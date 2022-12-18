@@ -6,6 +6,9 @@ using UnityEngine.AI;
 public class Monster : MonoBehaviour
 {
     [SerializeField] private GameObject playerGO;
+    [SerializeField] private Transform cameraHolder;
+    private CameraController playerCameraController;
+    private Movement playerMovement;
     [SerializeField] private NavMeshAgent navMeshAgent;
 
     [SerializeField] private float maxDistanceFromPlayer = 100f;
@@ -15,6 +18,7 @@ public class Monster : MonoBehaviour
     [SerializeField] private float monsterCooldownTime = 10f;
     private bool standingIdle;
     [SerializeField] private int roamLimit;
+    private bool canSeePlayer;
     private bool roamingDestinationSet;
     private int pathCount;
     private bool roaming;
@@ -49,6 +53,9 @@ public class Monster : MonoBehaviour
         chasing = false;
 
         initialHeadRotation = head.rotation;
+
+        playerMovement = playerGO.GetComponent<Movement>();
+        playerCameraController = cameraHolder.GetComponent<CameraController>();
     }
 
     // Update is called once per frame
@@ -83,6 +90,14 @@ public class Monster : MonoBehaviour
         return false;
     } 
 
+    private void OnTriggerEnter(Collider other) {
+        if (other.gameObject.GetInstanceID() == playerGO.GetInstanceID()) canSeePlayer = true;
+    }
+
+    private void OnTriggerExit(Collider other) {
+        if (other.gameObject.GetInstanceID() == playerGO.GetInstanceID()) canSeePlayer = false;
+    }
+
     private void ChasePlayer(){
 
         if(!chasing && !standingIdle) StartCoroutine(StandIdle(noticePlayerTime));
@@ -98,7 +113,7 @@ public class Monster : MonoBehaviour
     }
 
     private void LookForPlayer(){
-        if(IsPlayerVisible()){
+        if(IsPlayerVisible() && canSeePlayer){
             noticingPlayer = true;
             currentState = (int) monsterState.chasingPlayer;
             //Debug.Log("chasing");
@@ -127,7 +142,7 @@ public class Monster : MonoBehaviour
             //Debug.Log("Destination number " + pathCount);
         }
 
-        while((!IsPlayerVisible()) && !(Vector3.Distance(navMeshAgent.destination, transform.position) < 1.0f)){
+        while((!IsPlayerVisible() || !canSeePlayer) && !(Vector3.Distance(navMeshAgent.destination, transform.position) < 1.0f)){
             yield return null;
         }
 
@@ -137,10 +152,14 @@ public class Monster : MonoBehaviour
             //Debug.Log("inactive");
         }
         
-        if(IsPlayerVisible()){
+        if(IsPlayerVisible() && canSeePlayer){
             noticingPlayer = true;
             currentState = (int) monsterState.chasingPlayer;
-            //Debug.Log("chasing :");
+            //Debug.Log("chasing");
+            roaming = false;
+            playerCameraController.canLookAround = false;
+            playerMovement.canMove = false;
+            StopCoroutine(Roam());
         }
 
         roamingDestinationSet = false;
@@ -157,18 +176,25 @@ public class Monster : MonoBehaviour
         pauseStandIdle = StartCoroutine(Pause(timeToStand));
         navMeshAgent.SetDestination(transform.position);
 
-        while((!IsPlayerVisible() || currentState == (int) monsterState.chasingPlayer) && pausingIEnumerator){
+        while(((!IsPlayerVisible() || !canSeePlayer) || currentState == (int) monsterState.chasingPlayer) && pausingIEnumerator){
             yield return null;
+            if(currentState == (int) monsterState.chasingPlayer) cameraHolder.LookAt(head.position);
             head.LookAt(playerGO.transform.position);
         }
 
-        if(currentState == (int) monsterState.chasingPlayer) chasing = true;
+        if(currentState == (int) monsterState.chasingPlayer) { 
+            chasing = true;
+            playerCameraController.canLookAround = true;
+            playerMovement.canMove = true;
+        }
 
-        if(IsPlayerVisible() && currentState != (int) monsterState.chasingPlayer) {
+        if((IsPlayerVisible() && canSeePlayer) && currentState != (int) monsterState.chasingPlayer) {
             noticingPlayer = true;
             currentState = (int) monsterState.chasingPlayer;
             //Debug.Log("chasing");
             standingIdle = false;
+            playerCameraController.canLookAround = false;
+            playerMovement.canMove = false;
             StopCoroutine(StandIdle(timeToStand));
         }
 

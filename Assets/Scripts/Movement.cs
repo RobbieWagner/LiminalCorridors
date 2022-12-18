@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class Movement : MonoBehaviour
 {
 
-    [SerializeField] private bool canMove;
+    public bool canMove;
 
     [SerializeField] private CharacterController characterBody;
     [SerializeField] private Transform characterPos;
@@ -32,6 +32,7 @@ public class Movement : MonoBehaviour
     bool playingOutOfStaminaNoise;
 
     [SerializeField] private AudioSource movementSounds;
+    [SerializeField] private AudioSource fastMovementSounds;
     [SerializeField] private AudioSource lowStaminaSound;
     [SerializeField] private AudioSource scaredSound;
     [SerializeField] private AudioSource outOfStaminaSound;
@@ -141,6 +142,10 @@ public class Movement : MonoBehaviour
         {
             currentStamina += staminaGainRate;
             yield return new WaitForSeconds(1f);
+            if(currentStamina > maxStamina / 1.75f) { 
+                outOfStaminaSound.Pause(); 
+                lowStaminaSound.Pause();
+            }
         }
         StopCoroutine(ReplenishStamina());
     }
@@ -148,12 +153,13 @@ public class Movement : MonoBehaviour
     public IEnumerator PlayMovementSounds()
     {
         playingWalkingSound = true;
-        //movementSounds.Play();
-        if(!running) yield return new WaitForSeconds(.7f);
-        else
-        { 
-            yield return new WaitForSeconds(.3f);
-        }
+        movementSounds.Play();
+        while(!running && isMoving) yield return null;
+        movementSounds.Pause();
+        fastMovementSounds.Play();
+        while(running && isMoving) yield return null;
+        fastMovementSounds.Pause();
+
         playingWalkingSound = false;
         StopCoroutine(PlayMovementSounds());
     }
