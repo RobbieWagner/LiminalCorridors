@@ -17,13 +17,19 @@ public class Grid : MonoBehaviour
     [SerializeField] private GameObject light;
     [SerializeField] private Material floorMaterial;
 
+    private Vector3 gridStartPosition;
+
     private Cell[,] grid;
 
     [SerializeField] NavMeshBaker navMeshBaker;
     List<NavMeshSurface> navMeshSurfaces;
 
+    [SerializeField] GameObject gridParent;
+
     private void Start() {
         grid = new Cell[sizeX, sizeY];
+
+        gridStartPosition = transform.position;
 
         for(int x = 0; x < sizeX; x++) {
             for(int y = 0; y < sizeY; y++) {
@@ -40,7 +46,7 @@ public class Grid : MonoBehaviour
         }
 
         navMeshSurfaces = new List<NavMeshSurface>();
-        navMeshSurfaces.Add(gameObject.GetComponent<NavMeshSurface>());
+        navMeshSurfaces.Add(gridParent.GetComponent<NavMeshSurface>());
 
         DrawGameTerrain(grid);
         AddTexture(grid);
@@ -70,19 +76,29 @@ public class Grid : MonoBehaviour
         List<Vector3> vertices = new List<Vector3>();
         List<int> triangles = new List<int>();
 
-        for(int x = 0; x < sizeX; x++) {
-            for(int y = 0; y < sizeY; y++) {
-                Vector3 a = new Vector3(x * cellSize - cellSize/2, 0 ,y * cellSize + cellSize/2);
-                Vector3 b = new Vector3(x * cellSize + cellSize/2, 0 ,y * cellSize + cellSize/2);
-                Vector3 c = new Vector3(x * cellSize - cellSize/2, 0 ,y * cellSize - cellSize/2);
-                Vector3 d = new Vector3(x * cellSize + cellSize/2, 0 ,y * cellSize - cellSize/2);
-                Vector3[] v = new Vector3[] {a, b, c, b, d, c};
-                for(int i = 0; i < 6; i++) {
-                    vertices.Add(v[i]);
-                    triangles.Add(triangles.Count);
-                }
-            }
+        Vector3 a = new Vector3(gridStartPosition.x, 0 ,gridStartPosition.z + (cellSize * sizeY));
+        Vector3 b = new Vector3(gridStartPosition.x + (cellSize * sizeX), 0 ,gridStartPosition.z + (cellSize * sizeY));
+        Vector3 c = new Vector3(gridStartPosition.x, 0, gridStartPosition.z);
+        Vector3 d = new Vector3(gridStartPosition.x + (cellSize * sizeX), 0 ,gridStartPosition.z);
+        Vector3[] v = new Vector3[] {a, b, c, b, d, c};
+        for(int i = 0; i < 6; i++) {
+            vertices.Add(v[i]);
+            triangles.Add(triangles.Count);
         }
+
+        // for(int x = 0; x < sizeX; x++) {
+        //     for(int y = 0; y < sizeY; y++) {
+        //         Vector3 a = new Vector3(x * cellSize - cellSize/2, 0 ,y * cellSize + cellSize/2) + new Vector3(gridStartPosition.x / 2, gridStartPosition.y / 2, gridStartPosition.z / 2);
+        //         Vector3 b = new Vector3(x * cellSize + cellSize/2, 0 ,y * cellSize + cellSize/2) + new Vector3(gridStartPosition.x / 2, gridStartPosition.y / 2, gridStartPosition.z / 2);
+        //         Vector3 c = new Vector3(x * cellSize - cellSize/2, 0 ,y * cellSize - cellSize/2) + new Vector3(gridStartPosition.x / 2, gridStartPosition.y / 2, gridStartPosition.z / 2);
+        //         Vector3 d = new Vector3(x * cellSize + cellSize/2, 0 ,y * cellSize - cellSize/2) + new Vector3(gridStartPosition.x / 2, gridStartPosition.y / 2, gridStartPosition.z / 2);
+        //         Vector3[] v = new Vector3[] {a, b, c, b, d, c};
+        //         for(int i = 0; i < 6; i++) {
+        //             vertices.Add(v[i]);
+        //             triangles.Add(triangles.Count);
+        //         }
+        //     }
+        // }
 
         mesh.vertices = vertices.ToArray();
         mesh.triangles = triangles.ToArray();
@@ -132,14 +148,20 @@ public class Grid : MonoBehaviour
                 }
 
                 if(noiseValue1 < addHWall) {
-                    GameObject hWall = Instantiate(horizontalWall, new Vector3( x * cellSize, 0, y * cellSize), Quaternion.identity);
+                    GameObject hWall = Instantiate(horizontalWall, new Vector3( x * cellSize + cellSize/2, -2, y * cellSize + cellSize/2) + gridStartPosition + gridStartPosition, Quaternion.identity) as GameObject;
+                    hWall.transform.SetParent(transform);
                 }
                 if(noiseValue2 < addVWall) {
-                    GameObject vWall = Instantiate(verticalWall, new Vector3( x * cellSize, 0, y * cellSize), Quaternion.identity);
+                    GameObject vWall = Instantiate(verticalWall, new Vector3( x * cellSize + cellSize/2, -2, y * cellSize + cellSize/2) + gridStartPosition + gridStartPosition, Quaternion.identity) as GameObject;
+                    vWall.transform.SetParent(transform);
                 }
 
-                Instantiate(ceiling, new Vector3(x * cellSize, 9, y * cellSize), Quaternion.Euler(90, 0, 0));
-                if(light != null && Random.Range(0,5) == 0)Instantiate(light, new Vector3(x * cellSize, 8, y * cellSize), Quaternion.Euler(90, 0, 0));
+                GameObject ceilingGO = Instantiate(ceiling, new Vector3(x * cellSize + cellSize/2, 7, y * cellSize + cellSize/2) + gridStartPosition + gridStartPosition, Quaternion.Euler(90, 0, 0)) as GameObject;
+                ceilingGO.transform.SetParent(transform);
+                if(light != null && Random.Range(0,5) == 0) {
+                    GameObject lightGO = Instantiate(light, new Vector3(x * cellSize + cellSize/2, 6, y * cellSize + cellSize/2) + gridStartPosition + gridStartPosition, Quaternion.Euler(90, 0, 0)) as GameObject;
+                    lightGO.transform.SetParent(transform);
+                }
             }
         }
 
