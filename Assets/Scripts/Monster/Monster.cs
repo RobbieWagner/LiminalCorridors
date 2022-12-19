@@ -14,6 +14,7 @@ public class Monster : MonoBehaviour
     [SerializeField] private float maxDistanceFromPlayer = 100f;
 
     private bool firstIdle;
+    private bool firstEncounter;
     [SerializeField] private float initialWaitTime = 60f;
     [SerializeField] private float monsterCooldownTime = 10f;
     private bool standingIdle;
@@ -41,11 +42,15 @@ public class Monster : MonoBehaviour
 
     public int currentState;
 
+    [SerializeField] private AudioSource monsterSound;
+    [SerializeField] private AudioSource monsterScreech;
+
     // Start is called before the first frame update
     private void Start(){
         currentState = 0;
         standingIdle = false;
         firstIdle = true;
+        firstEncounter = true;
         roamingDestinationSet = false;
         roaming = false;
         pausingIEnumerator = false;
@@ -64,7 +69,6 @@ public class Monster : MonoBehaviour
 
         if(currentState == (int) monsterState.inactive && !standingIdle){
             if(firstIdle && !standingIdle){
-                firstIdle = false;
                 StartCoroutine(StandIdle(initialWaitTime));
             }
             else if(!standingIdle) StartCoroutine(StandIdle(monsterCooldownTime));
@@ -113,6 +117,7 @@ public class Monster : MonoBehaviour
     }
 
     private void LookForPlayer(){
+        firstEncounter = false;
         if(IsPlayerVisible()){
             noticingPlayer = true;
             currentState = (int) monsterState.chasingPlayer;
@@ -128,6 +133,7 @@ public class Monster : MonoBehaviour
     private IEnumerator Roam(){
         if(!roamingDestinationSet && !roaming)
         {
+            monsterSound.Play();
             float positionX = Random.Range(-maxDistanceFromPlayer, maxDistanceFromPlayer);
             float positionZ = Random.Range(-maxDistanceFromPlayer, maxDistanceFromPlayer);
             Vector3 path = new Vector3(playerGO.transform.position.x + positionX, 0, playerGO.transform.position.z + positionZ);
@@ -157,8 +163,10 @@ public class Monster : MonoBehaviour
             currentState = (int) monsterState.chasingPlayer;
             //Debug.Log("chasing");
             roaming = false;
-            playerCameraController.canLookAround = false;
-            playerMovement.canMove = false;
+            if(firstEncounter) {
+                playerCameraController.canLookAround = false;
+                playerMovement.canMove = false;
+            }
             StopCoroutine(Roam());
         }
 
@@ -176,13 +184,18 @@ public class Monster : MonoBehaviour
         pauseStandIdle = StartCoroutine(Pause(timeToStand));
         navMeshAgent.SetDestination(transform.position);
 
+        if(currentState == (int) monsterState.inactive && !firstIdle) monsterSound.Play();
+
+        firstIdle = false;
+
         while(((!IsPlayerVisible() || !canSeePlayer) || currentState == (int) monsterState.chasingPlayer) && pausingIEnumerator){
             yield return null;
-            if(currentState == (int) monsterState.chasingPlayer && !chasing) cameraHolder.LookAt(head.position);
+            if(currentState == (int) monsterState.chasingPlayer && !chasing && firstEncounter) cameraHolder.LookAt(head.position);
             head.LookAt(playerGO.transform.position);
         }
 
         if(currentState == (int) monsterState.chasingPlayer) { 
+            monsterScreech.Play();
             chasing = true;
             playerCameraController.canLookAround = true;
             playerMovement.canMove = true;
@@ -193,8 +206,10 @@ public class Monster : MonoBehaviour
             currentState = (int) monsterState.chasingPlayer;
             //Debug.Log("chasing");
             standingIdle = false;
-            playerCameraController.canLookAround = false;
-            playerMovement.canMove = false;
+            if(firstEncounter){
+                playerCameraController.canLookAround = false;
+                playerMovement.canMove = false;
+            }   
             StopCoroutine(StandIdle(timeToStand));
         }
 
