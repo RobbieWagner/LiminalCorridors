@@ -67,21 +67,26 @@ public class Monster : MonoBehaviour
     private void Update(){
         Vector3 monsterDestination;
 
-        // if(Vector3.Distance(transform.position, playerGO.transform.position) > 300) {
-        //     bool negativeX = (int) Random.Range(0, 2) == 0;
-        //     bool negativeZ = (int) Random.Range(0, 2) == 0;
-        //     float positionX = Random.Range(100f, 150f);
-        //     float positionZ = Random.Range(100f, 150f);
+        NavMeshHit hit;
+        if(!NavMesh.SamplePosition(transform.position, out hit, .5f, NavMesh.AllAreas)){
+            Debug.Log("Monster moves");
+            navMeshAgent.enabled = false;
+            bool negativeX = (int) Random.Range(0, 2) == 0;
+            bool negativeZ = (int) Random.Range(0, 2) == 0;
+            float positionX = Random.Range(100f, 150f);
+            float positionZ = Random.Range(100f, 150f);
 
-        //     navMeshAgent.Stop();
-        //     navMeshAgent.ResetPath();
+            if(negativeX && negativeZ) transform.position = new Vector3(playerGO.transform.position.x - positionX, transform.position.y, playerGO.transform.position.z - positionZ);
+            else if(negativeX) transform.position = new Vector3(playerGO.transform.position.x - positionX, transform.position.y, playerGO.transform.position.z + positionZ);
+            else if(negativeZ) transform.position = new Vector3(playerGO.transform.position.x + positionX, transform.position.y, playerGO.transform.position.z - positionZ);
+            else transform.position = new Vector3(playerGO.transform.position.x + positionX, transform.position.y, playerGO.transform.position.z + positionZ);
 
-        //     if(negativeX && negativeZ) transform.position = new Vector3(playerGO.transform.position.x - positionX, transform.position.y, playerGO.transform.position.z - positionZ);
-        //     else if(negativeX) transform.position = new Vector3(playerGO.transform.position.x - positionX, transform.position.y, playerGO.transform.position.z + positionZ);
-        //     else if(negativeZ) transform.position = new Vector3(playerGO.transform.position.x + positionX, transform.position.y, playerGO.transform.position.z - positionZ);
-        //     else transform.position = new Vector3(playerGO.transform.position.x + positionX, transform.position.y, playerGO.transform.position.z + positionZ);
-        //     navMeshAgent.SetDestination(transform.position);
-        // }
+            navMeshAgent.enabled = true;
+
+            navMeshAgent.Stop();
+            navMeshAgent.ResetPath();
+            navMeshAgent.SetDestination(transform.position);
+        }
 
         if(currentState == (int) monsterState.inactive && !standingIdle){
             if(firstIdle && !standingIdle){

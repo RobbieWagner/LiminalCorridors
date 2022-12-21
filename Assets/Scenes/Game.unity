@@ -1931,7 +1931,7 @@ MonoBehaviour:
   cameraHolder: {fileID: 343132253}
   navMeshAgent: {fileID: 1530225741}
   maxDistanceFromPlayer: 100
-  initialWaitTime: 60
+  initialWaitTime: 10
   monsterCooldownTime: 30
   roamLimit: 3
   noticePlayerTime: 2
