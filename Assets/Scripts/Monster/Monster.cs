@@ -69,7 +69,7 @@ public class Monster : MonoBehaviour
 
         NavMeshHit hit;
         if(!NavMesh.SamplePosition(transform.position, out hit, .5f, NavMesh.AllAreas)){
-            Debug.Log("Monster moves");
+            //Debug.Log("Monster moves");
             navMeshAgent.enabled = false;
             bool negativeX = (int) Random.Range(0, 2) == 0;
             bool negativeZ = (int) Random.Range(0, 2) == 0;
@@ -83,9 +83,11 @@ public class Monster : MonoBehaviour
 
             navMeshAgent.enabled = true;
 
-            navMeshAgent.Stop();
-            navMeshAgent.ResetPath();
-            navMeshAgent.SetDestination(transform.position);
+            if(NavMesh.SamplePosition(transform.position, out hit, .5f, NavMesh.AllAreas)){
+                navMeshAgent.Stop();
+                navMeshAgent.ResetPath();
+                navMeshAgent.SetDestination(transform.position);
+            }
         }
 
         if(currentState == (int) monsterState.inactive && !standingIdle){

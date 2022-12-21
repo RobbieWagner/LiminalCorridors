@@ -28,6 +28,7 @@ public class Grid : MonoBehaviour
 
     [SerializeField] GameObject parentGrid;
     public NavMeshBaker navMeshBaker;
+    [HideInInspector] public NavMeshData navMeshData;
     [HideInInspector] public List<NavMeshSurface> navMeshSurfaces;
 
     private void Start() {
@@ -35,15 +36,13 @@ public class Grid : MonoBehaviour
 
         gridStartPosition = transform.position;
 
+        navMeshData = new NavMeshData();
+        NavMesh.AddNavMeshData(navMeshData);
+
         for(int x = 0; x < sizeX; x++) {
             for(int y = 0; y < sizeY; y++) {
                 Cell cell = new Cell();
 
-                //float xOffset1 = Random.Range(-10000f, 10000f);
-                //float yOffset1 = Random.Range(-10000f, 10000f);
-                //float noiseValue1 = Mathf.PerlinNoise(x * wallNoiseScale + xOffset1, y * wallNoiseScale + yOffset1);
-                
-                //cell.isTraversable = noiseValue1 < blankTileBias;
                 cell.isTraversable = true;
                 grid[x, y] = cell;
             }
@@ -55,7 +54,7 @@ public class Grid : MonoBehaviour
         DrawGameTerrain(grid);
         AddTexture(grid);
         DrawGameWalls(grid);
-        navMeshBaker.buildNavMeshes(navMeshSurfaces);
+        navMeshBaker.BuildNavMeshes(navMeshSurfaces);
     }
 
     private void AddTexture(Cell[,] grid) {
@@ -89,20 +88,6 @@ public class Grid : MonoBehaviour
             vertices.Add(v[i]);
             triangles.Add(triangles.Count);
         }
-
-        // for(int x = 0; x < sizeX; x++) {
-        //     for(int y = 0; y < sizeY; y++) {
-        //         Vector3 a = new Vector3(x * cellSize - cellSize/2, 0 ,y * cellSize + cellSize/2) + new Vector3(gridStartPosition.x / 2, gridStartPosition.y / 2, gridStartPosition.z / 2);
-        //         Vector3 b = new Vector3(x * cellSize + cellSize/2, 0 ,y * cellSize + cellSize/2) + new Vector3(gridStartPosition.x / 2, gridStartPosition.y / 2, gridStartPosition.z / 2);
-        //         Vector3 c = new Vector3(x * cellSize - cellSize/2, 0 ,y * cellSize - cellSize/2) + new Vector3(gridStartPosition.x / 2, gridStartPosition.y / 2, gridStartPosition.z / 2);
-        //         Vector3 d = new Vector3(x * cellSize + cellSize/2, 0 ,y * cellSize - cellSize/2) + new Vector3(gridStartPosition.x / 2, gridStartPosition.y / 2, gridStartPosition.z / 2);
-        //         Vector3[] v = new Vector3[] {a, b, c, b, d, c};
-        //         for(int i = 0; i < 6; i++) {
-        //             vertices.Add(v[i]);
-        //             triangles.Add(triangles.Count);
-        //         }
-        //     }
-        // }
 
         mesh.vertices = vertices.ToArray();
         mesh.triangles = triangles.ToArray();
