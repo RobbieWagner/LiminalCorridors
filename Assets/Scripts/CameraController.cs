@@ -50,7 +50,7 @@ public class CameraController : MonoBehaviour
         Ray ray = camera.ScreenPointToRay(Input.mousePosition);
         RaycastHit[] hits;
         // Casts the ray and get the first game object hit
-        Debug.DrawRay(ray.origin, ray.direction * 10f, Color.red);
+        //Debug.DrawRay(ray.origin, ray.direction * 10f, Color.red);
         bool didHit = Physics.Raycast(ray, out RaycastHit hit, 5, interactables);
         //Issue: bool didHit is always false, even if the object is an interactable.
     }

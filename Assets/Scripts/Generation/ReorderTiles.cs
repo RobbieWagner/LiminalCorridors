@@ -14,7 +14,7 @@ public class ReorderTiles : MonoBehaviour
 
     private void OnTriggerEnter(Collider other) {
         if(other.gameObject.GetInstanceID() == player.GetInstanceID()) {
-            Debug.Log("quadrant" + quadrant + " on " + parentGrid.gameObject.name);
+            //Debug.Log("quadrant" + quadrant + " on " + parentGrid.gameObject.name);
             if(quadrant == 1) {
                 parentGrid.gridOnLeft.position = new Vector3(parentGrid.transform.position.x + 400, 1, parentGrid.transform.position.z + 400);
                 parentGrid.gridOnRight.position = new Vector3(parentGrid.transform.position.x + 400, 1, parentGrid.transform.position.z);
